@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cronograma Assistente UFBA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: cabeçalho com contagem regressiva e progresso, legenda de matérias, depois 11 semanas em lista de dias com blocos de 1h marcáveis */
+:root{
+  --bg:#f5f6f3; --surface:#ffffff; --fg:#1b2420; --muted:#5d6a63; --line:#dde2dc;
+  --accent:#0e6b52; --accent-soft:#e1efe9; --hol:#a3530f; --hol-soft:#fbeee0;
+  --c-por:#b4374f; --c-inf:#2f63b8; --c-adp:#0e6b52; --c-dad:#7a4bb0; --c-lic:#b06b0b;
+  --c-arq:#5a6b2b; --c-mat:#8a5a3c; --c-ges:#1f7f8f; --c-ate:#c0478f; --c-rev:#4b5560;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Public Sans",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121815; --surface:#1a221e; --fg:#e6ece8; --muted:#9aa8a0; --line:#2c3732;
+  --accent:#4fc39c; --accent-soft:#1d3a30; --hol:#f0a35e; --hol-soft:#3a2a1a;
+  --c-por:#f0849a; --c-inf:#86aef0; --c-adp:#4fc39c; --c-dad:#c3a0ec; --c-lic:#e9ad55;
+  --c-arq:#b6c97a; --c-mat:#d6a382; --c-ges:#6fcbd9; --c-ate:#f08fcb; --c-rev:#aab4bd;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#1a221e; --fg:#e6ece8; --muted:#9aa8a0; --line:#2c3732;
+  --accent:#4fc39c; --accent-soft:#1d3a30; --hol:#f0a35e; --hol-soft:#3a2a1a;
+  --c-por:#f0849a; --c-inf:#86aef0; --c-adp:#4fc39c; --c-dad:#c3a0ec; --c-lic:#e9ad55;
+  --c-arq:#b6c97a; --c-mat:#d6a382; --c-ges:#6fcbd9; --c-ate:#f08fcb; --c-rev:#aab4bd;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);padding-inline:16px;padding-block:28px 64px}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:28px}
+h1,h2{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.6rem);font-weight:800;line-height:1.08;letter-spacing:-.01em}
+.eyebrow{font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{display:grid;gap:14px}
+.sub{color:var(--muted);max-width:62ch;margin:0}
+.stats{display:flex;flex-wrap:wrap;gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:120px;flex:1 1 120px}
+.stat b{display:block;font-family:var(--f-display);font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat span{font-size:.8rem;color:var(--muted)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:600 .85rem var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.week{display:grid;gap:10px}
+.week-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--fg);padding-bottom:6px}
+.week-h h2{font-size:1.15rem;font-weight:800}
+.week-h small{color:var(--muted);font-family:var(--f-mono);font-size:.78rem}
+.phase{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--accent)}
+.day{display:grid;grid-template-columns:92px 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.day.today{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.day.done{opacity:.6}
+.when{display:grid;align-content:start;gap:2px}
+.when .d{font-family:var(--f-display);font-weight:800;font-size:1.35rem;font-variant-numeric:tabular-nums;line-height:1}
+.when .w{font-size:.8rem;color:var(--muted)}
+.when .h{font-family:var(--f-mono);font-size:.75rem;color:var(--accent);margin-top:4px}
+.tag{font-size:.7rem;font-weight:600;color:var(--hol);background:var(--hol-soft);border-radius:4px;padding:1px 6px;margin-top:4px;justify-self:start}
+.tag.now{color:var(--accent);background:var(--accent-soft)}
+.blocks{display:grid;gap:8px;min-width:0}
+.blk{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding-left:10px;border-left:3px solid var(--c)}
+.blk input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent);cursor:pointer}
+.blk label{cursor:pointer;min-width:0}
+.blk .m{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;color:var(--c)}
+.blk .t{font-weight:600;display:block}
+.blk .x{color:var(--muted);font-size:.86rem;display:block}
+.blk input:checked + label .t{text-decoration:line-through;text-decoration-color:var(--muted)}
+.exam{background:var(--accent);color:var(--surface);border-radius:12px;padding:18px 20px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
+.exam h2{font-size:1.4rem}
+.tips{display:grid;gap:6px;color:var(--muted);font-size:.9rem;max-width:70ch}
+.tips ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.weights{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.weights table{width:100%;border-collapse:collapse;font-size:.88rem}
+.weights th,.weights td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.weights tr:last-child td{border-bottom:0}
+.weights th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.weights .n{text-align:right;font-variant-numeric:tabular-nums}
+.weights .vis{width:40%;min-width:120px}
+.hb{height:8px;border-radius:99px;background:var(--accent)}
+.weights tr.top td:first-child{font-weight:600}
+@media (max-width:560px){.day{grid-template-columns:1fr}.when{grid-template-columns:auto auto 1fr;align-items:baseline;gap:8px}.when .h,.tag{margin-top:0}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Concurso UFBA nº 007/2026 · Nível Médio · Classe D</div>
+    <h1>Cronograma de estudos · Assistente em Administração</h1>
+    <p class="sub">De 19/10 a 18/12, de segunda a sexta. Segundas, quartas e sextas têm 3h; terças e quintas, 2h. Cada bloco vale 1h. Marque os blocos concluídos (a marcação fica salva neste navegador).</p>
+    <div class="stats">
+      <div class="stat"><b id="s-count">–</b><span>dias até a prova (20/12)</span></div>
+      <div class="stat"><b>45</b><span>dias de estudo</span></div>
+      <div class="stat"><b>100</b><span>vagas (3ª retificação)</span></div>
+      <div class="stat"><b id="s-hours">–</b><span>horas planejadas</span></div>
+      <div class="stat"><b id="s-done">0%</b><span>concluído</span></div>
+    </div>
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+    <div class="weights"><table><thead><tr><th>Matéria</th><th class="n">Pontos</th><th class="n">Horas no plano</th><th class="vis">Distribuição das horas</th></tr></thead><tbody id="weights"></tbody></table></div>
+    <div class="legend" id="legend"></div>
+    <div class="tools">
+      <button id="b-all" aria-pressed="true">Todas as semanas</button>
+      <button id="b-now" aria-pressed="false">Semana atual</button>
+      <button id="b-pend" aria-pressed="false">Só pendentes</button>
+    </div>
+  </header>
+
+  <main id="plan" class="wrap"></main>
+
+  <div class="exam"><div><div class="eyebrow" style="color:inherit;opacity:.8">Domingo</div><h2>20/12 · Dia da prova</h2></div><span>Sábado 19/12: descanso. Nada de conteúdo novo.</span></div>
+
+  <section class="tips">
+    <div class="eyebrow">Como usar</div>
+    <ul>
+      <li>Nos blocos de teoria, leia o conteúdo e faça um resumo curto. A lei seca (8.112, 9.784, 14.133, LAI, LGPD) vale ser lida no próprio texto.</li>
+      <li>Nos blocos de questões, filtre por Instituto AVALIA no QConcursos ou TEC Concursos e anote cada erro com o assunto.</li>
+      <li>Feriados (02/11 e 20/11) estão mantidos como dias de estudo. Se folgar, desloque o conteúdo para o sábado.</li>
+      <li>As horas seguem o peso da prova: Conhecimentos Específicos (30 questões valendo 2 pontos) e Redação valem juntos 120 dos 150 pontos.</li>
+      <li>Para não ser eliminada: pelo menos 45 pontos na objetiva, sem zerar nenhuma matéria, e pelo menos 30 pontos na redação.</li>
+      <li>Redação toda quarta: dissertação de 20 a 30 linhas, escrita à mão no tempo de prova. Pela 3ª retificação, são corrigidas as redações dos 360 primeiros da ampla concorrência (150 pretos e pardos, 60 PcD, 18 indígenas, 12 quilombolas).</li>
+      <li>No desempate, contam primeiro Conhecimentos Específicos e depois Língua Portuguesa: são as matérias para caprichar.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const M={
+  DAD:["Direito Administrativo","--c-dad"],LIC:["Licitações","--c-lic"],ARQ:["Arquivologia","--c-arq"],
+  MAT:["Recursos Materiais","--c-mat"],GES:["Administração e Gestão de Pessoas","--c-ges"],ATE:["Atendimento ao Público","--c-ate"],
+  RED:["Redação","--c-por"],POR:["Português","--c-por"],ADP:["Administração Pública","--c-adp"],INF:["Informática","--c-inf"],
+  REV:["Questões e simulados","--c-rev"]
+};
+const GROUPS=[
+  ["Conhecimentos Específicos",60,["DAD","LIC","ARQ","MAT","GES","ATE"]],
+  ["Redação",60,["RED"]],
+  ["Língua Portuguesa",12,["POR"]],
+  ["Administração Pública",12,["ADP"]],
+  ["Noções de Informática",6,["INF"]],
+  ["Questões e simulados","–",["REV"]]
+];
+const Q=["REV","Questões da semana","30 questões da banca, priorizando os Conhecimentos Específicos estudados na semana. Anotar os erros"];
+const W=[
+ [ // 19/10
+  [["DAD","Estado, governo e Administração Pública","Conceitos, elementos, poderes, organização, natureza, fins e princípios"],["ARQ","Conceitos fundamentais de arquivologia","Arquivo, documento, fundo, princípios arquivísticos, ciclo vital"],["POR","Interpretação de textos","Ideias centrais e periféricas, inferências, pressupostos e subentendidos"]],
+  [["GES","Organizações formais","Tipos de estrutura organizacional, natureza, finalidades, critérios de departamentalização"],["ADP","Administração Pública na CF/88","Arts. 37 a 41: princípios, disposições gerais, servidores públicos"]],
+  [["DAD","Organização administrativa da União","Administração direta e indireta: autarquias, fundações, empresas públicas, SEM"],["POR","Tipologia e gêneros textuais","Narração, descrição, dissertação, exposição, injunção"],["RED","Redação: como a banca corrige","Dissertação de 20 a 30 linhas. 4 critérios de 15 pontos: tema, norma padrão, coesão e coerência, estrutura. Mínimo de 30/60"]],
+  [["ARQ","Gestão de documentos","Gerenciamento da informação; produção, utilização e destinação"],["INF","Conceitos básicos e Windows","Hardware e software; Windows 10/11; arquivos, pastas e diretórios"]],
+  [["MAT","Classificação de materiais","Atributos e tipos de classificação"],["ADP","Lei 8.112/90, parte 1","Provimento, vacância, remoção, redistribuição, substituição"],Q]],
+ [ // 26/10
+  [["DAD","Agentes públicos","Espécies e classificação; poderes, deveres e prerrogativas; cargo, emprego e função"],["ARQ","Diagnóstico e arquivos correntes e intermediário","Diagnóstico arquivístico; teoria das três idades"],["POR","Ortografia e acentuação","Acordo Ortográfico vigente"]],
+  [["GES","Processo organizacional","Planejamento, direção, comunicação, controle e avaliação"],["ADP","Lei 8.112/90, parte 2","Direitos, vantagens, licenças e afastamentos"]],
+  [["DAD","Poderes administrativos","Hierárquico, disciplinar, regulamentar, de polícia; uso e abuso do poder"],["POR","Coesão e coerência","Referência, elipse, conectores, operadores argumentativos"],["RED","Redação 1: atendimento ao cidadão","Tema: a qualidade do atendimento no serviço público. 60 min, 20 a 30 linhas"]],
+  [["MAT","Gestão de estoques: conceitos","Funções do estoque, tipos de estoque, custos"],["INF","Word e PowerPoint (Office 365)","Formatação, atalhos, estilos, slides e modos de exibição"]],
+  [["ARQ","Protocolos","Recebimento, registro, classificação, distribuição, tramitação e expedição"],["ADP","Lei 8.112/90, parte 3","Deveres, proibições, responsabilidades, penalidades e PAD"],Q]],
+ [ // 02/11
+  [["DAD","Serviços públicos","Conceito, classificação, requisitos; concessão, permissão e autorização"],["MAT","Gestão de estoques: cálculos","Curva ABC, estoque mínimo, ponto de pedido, giro e cobertura"],["POR","Classes e formação de palavras","Valores semânticos das classes; formação e estrutura das palavras"]],
+  [["GES","Gestão de processos","Mapeamento, fluxogramas, análise e melhoria de processos"],["ADP","Ética no serviço público","Decreto 1.171/94 e Decreto 6.029/07"]],
+  [["DAD","Controle da Administração","Controle administrativo, judicial e legislativo"],["POR","Termos da oração","Essenciais, integrantes e acessórios"],["RED","Redação 2: transparência","Tema: transparência e acesso à informação na Administração Pública"]],
+  [["ARQ","Avaliação de documentos","Tabela de temporalidade, prazos de guarda, eliminação"],["INF","Excel (Office 365)","Fórmulas, funções (SOMA, MÉDIA, SE, PROCV), referências"]],
+  [["GES","Gestão de pessoas: fundamentos","Conceitos, importância, função do órgão de gestão de pessoas, políticas e sistemas de informação"],["ADP","Improbidade administrativa","Lei 8.429/92 com as alterações da Lei 14.230/21"],Q]],
+ [ // 09/11
+  [["DAD","Responsabilidade civil do Estado","Responsabilidade objetiva, risco administrativo, ação regressiva (art. 37, § 6º)"],["LIC","Lei 14.133/21: fundamentos","Conceito, objeto, finalidades, princípios, obrigatoriedade"],["POR","Coordenação, subordinação e vozes","Orações coordenadas e subordinadas; vozes verbais; pronomes relativos"]],
+  [["MAT","Compras","Modalidades de compra e cadastro de fornecedores"],["ADP","Processo administrativo (Lei 9.784/99)","Princípios, direitos, prazos, recursos, anulação e revogação"]],
+  [["LIC","Contratação direta","Dispensa, inexigibilidade e vedações"],["POR","Pontuação","Uso da vírgula e efeitos de sentido"],["RED","Redação 3: governo digital","Tema: a transformação digital dos serviços públicos e a inclusão do cidadão"]],
+  [["ARQ","Arquivos permanentes","Recolhimento, arranjo, descrição e acesso"],["INF","Internet, e-mail, nuvem e redes","Navegadores, busca, Outlook, armazenamento e colaboração em nuvem"]],
+  [["GES","Gestão da qualidade","Princípios e ferramentas da qualidade"],["ADP","Lei de Acesso à Informação","Lei 12.527/11 e Decreto 7.724/12: transparência ativa e passiva, sigilo"],Q]],
+ [ // 16/11
+  [["LIC","Modalidades de licitação","Pregão, concorrência, concurso, leilão, diálogo competitivo"],["GES","Motivação","Relação indivíduo e organização; principais teorias de motivação"],["POR","Concordância verbal e nominal","Regras gerais e casos especiais"]],
+  [["MAT","Recebimento, entrada e conferência","Recebimento provisório e definitivo, entrada e conferência de materiais"],["ADP","LGPD (Lei 13.709/18)","Dado pessoal e sensível, princípios, bases legais no poder público, direitos do titular"]],
+  [["LIC","Procedimentos e fases","Fases da licitação, do planejamento à homologação"],["POR","Regência e crase","Regência verbal e nominal; casos de crase"],["RED","Redação 4: dados pessoais","Tema: proteção de dados pessoais nas instituições públicas"]],
+  [["ARQ","Tipologias, suportes e automação","Tipologias documentais, suportes físicos, microfilmagem, automação"],["INF","Segurança da informação","Senhas, phishing, engenharia social; vírus e ransomware; antivírus, firewall, backup"]],
+  [["GES","Liderança e comportamento organizacional","Estilos e teorias de liderança"],["ADP","Contratos administrativos (Lei 14.133)","Gestão e fiscalização contratual, infrações e sanções"],Q]],
+ [ // 23/11
+  [["LIC","Revogação, invalidação e controle","Revogação, invalidação, desistência e controle das licitações"],["ARQ","Preservação e conservação","Preservação, conservação e restauração de documentos"],["POR","Colocação pronominal e semântica","Próclise, mesóclise, ênclise; sinonímia, antonímia, paronímia"]],
+  [["MAT","Armazenagem","Critérios e técnicas de armazenagem, layout, segurança"],["ADP","Governança, integridade e controle","Gestão de riscos, controles internos, accountability, Decreto 9.830/19"]],
+  [["GES","Gestão de projetos","Ciclo de vida, escopo, prazo, custo e riscos"],["POR","Figuras de linguagem e variação","Metáfora, metonímia, ironia, ambiguidade; registro formal e informal"],["RED","Redação 5: sustentabilidade","Tema: práticas sustentáveis na Administração Pública"]],
+  [["ATE","Qualidade no atendimento","Comunicabilidade, cortesia, presteza, eficiência, tolerância, discrição"],["ADP","Governo Digital (Lei 14.129/21)","Digitalização de serviços, cidadania digital, compartilhamento de dados"]],
+  [["ATE","Trabalho em equipe","Personalidade e relacionamento, empatia, comportamento receptivo e defensivo, opinião pública"],["ADP","Gestão documental e patrimônio","Lei 8.159/91; almoxarifado, inventário e patrimônio público"],Q]],
+ [ // 30/11
+  [["ATE","Postura profissional e comunicação","Relações interpessoais e comunicação no serviço público"],["LIC","Lei seca 14.133/21","Releitura dos artigos mais cobrados + 20 questões"],["POR","Reescrita de frases","Transposição de voz, substituição lexical, reorganização sintática"]],
+  [["DAD","Questões de Direito Administrativo","30 questões de todos os tópicos do item 1 ao 6"],["ADP","A3P e Carta de Serviços","Sustentabilidade na Administração; Lei 13.460/17 e canais de atendimento"]],
+  [["ARQ","Questões de arquivologia","30 questões de todos os tópicos"],["POR","Redação Oficial","Manual da Presidência (3ª ed.): princípios, pronomes de tratamento, padrão ofício"],["RED","Redação 6: ética","Tema: ética e integridade no serviço público"]],
+  [["MAT","Questões de recursos materiais","30 questões de todos os tópicos"],["ADP","IFES e segurança no trabalho","Autonomia universitária, órgãos colegiados; boas práticas de segurança da informação"]],
+  [["GES","Questões de administração e pessoas","30 questões de organizações, processos, qualidade, projetos e pessoas"],["ADP","Estatuto e Regimento da UFBA","Organização institucional, competências, direitos e deveres"],Q]],
+ [ // 07/12
+  [["DAD","Revisão: Direito Administrativo","Estado, organização, agentes, poderes, serviços, controle, responsabilidade"],["LIC","Revisão: licitações","Princípios, contratação direta, modalidades, fases"],["REV","Questões de específicos","30 questões misturadas"]],
+  [["ARQ","Revisão: arquivologia","Ciclo vital, protocolo, avaliação, permanentes, preservação"],["MAT","Revisão: recursos materiais","Classificação, estoques, compras, recebimento, armazenagem"]],
+  [["REV","Simulado 1: objetiva","60 questões cronometradas (12 Português, 6 Informática, 12 Adm. Pública, 30 Específicos)"],["RED","Simulado 1: redação","Redação no tempo de prova, na folha de 30 linhas"],["REV","Correção do simulado","Calcular a nota (de 0 a 150) e anotar os erros por assunto"]],
+  [["GES","Revisão: administração e pessoas","Estruturas, processos, qualidade, projetos, motivação, liderança"],["ATE","Revisão: atendimento ao público","Qualidade, equipe, postura e comunicação + questões"]],
+  [["POR","Revisão: Português","Concordância, regência, crase, pontuação e questões de interpretação"],["ADP","Revisão: legislação","8.112, ética, improbidade, 9.784, LAI e LGPD"],["RED","Redação 7: reescrita","Reescrever a redação do Simulado 1 corrigindo os erros"]]],
+ [ // 14/12
+  [["REV","Questões de específicos","40 questões misturadas dos Conhecimentos Específicos"],["REV","Revisar erros do Simulado 1","Retomar os assuntos com mais erros"],["ADP","Revisão: temas complementares","Governança, governo digital, A3P, IFES, Estatuto da UFBA"]],
+  [["INF","Revisão: informática","Windows, Office 365, internet, segurança + questões"],["RED","Redação 8: inclusão","Tema: inclusão e acessibilidade na universidade pública"]],
+  [["REV","Simulado 2: objetiva","60 questões cronometradas"],["RED","Simulado 2: redação","Redação no tempo de prova"],["REV","Correção do simulado","Calcular a nota e anotar os erros"]],
+  [["REV","Pontos fracos dos específicos","Revisar os 3 assuntos com mais erros nos simulados"],["REV","Caderno de erros","Reler todos os erros anotados"]],
+  [["REV","Revisão leve final","Resumos, mapas mentais e modelo de estrutura da redação"],["REV","Preparação para a prova","Conferir local e horário (manhã), documento com foto e caneta azul ou preta"]]]
+];
+const HOL={"2026-11-02":"Feriado","2026-11-20":"Feriado"};
+const DAYS=["Segunda","Terça","Quarta","Quinta","Sexta"];
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const br=d=>`${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let done={};
+try{done=JSON.parse(localStorage.getItem("ufba-crono-v3")||"{}")||{}}catch(e){done={}}
+const save=()=>{try{localStorage.setItem("ufba-crono-v3",JSON.stringify(done))}catch(e){}};
+
+const now=new Date();const todayIso=iso(now);
+const exam=new Date(2026,11,20);
+const daysLeft=Math.max(0,Math.round((new Date(exam.getFullYear(),exam.getMonth(),exam.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5));
+document.getElementById("s-count").textContent=daysLeft;
+
+const hrs={};W.flat(2).forEach(b=>{hrs[b[0]]=(hrs[b[0]]||0)+1});
+const gh=GROUPS.map(([n,p,ks])=>[n,p,ks.reduce((a,k)=>a+(hrs[k]||0),0)]);const gmax=Math.max(...gh.map(g=>g[2]));
+document.getElementById("weights").innerHTML=gh.map(([n,p,h],i)=>`<tr class="${i<2?"top":""}"><td>${n}</td><td class="n">${p}</td><td class="n">${h}h</td><td class="vis"><div class="hb" style="width:${Math.round(h/gmax*100)}%"></div></td></tr>`).join("");
+document.getElementById("legend").innerHTML=Object.values(M).map(([n,c])=>`<span style="--c:var(${c})"><i class="dot"></i>${n}</span>`).join("");
+
+const plan=document.getElementById("plan");
+let totalBlocks=0,html="",currentWeek=-1;
+W.forEach((week,wi)=>{
+  const mon=new Date(2026,9,19+wi*7),fri=new Date(2026,9,23+wi*7);
+  if(todayIso>=iso(mon)&&todayIso<=iso(new Date(2026,9,25+wi*7)))currentWeek=wi;
+  const hours=week.reduce((a,d)=>a+d.length,0);
+  const phase=wi<7?"Fase 1 · Conteúdo":"Fase 2 · Revisão e simulados";
+  html+=`<section class="week" data-week="${wi}"><div class="week-h"><div><div class="phase">${phase}</div><h2>Semana ${wi+1} · ${br(mon)} a ${br(fri)}</h2></div><small>${hours}h na semana</small></div>`;
+  week.forEach((blocks,di)=>{
+    const d=new Date(2026,9,19+wi*7+di),id=iso(d);
+    totalBlocks+=blocks.length;
+    const tags=(HOL[id]?`<span class="tag">${HOL[id]}</span>`:"")+(id===todayIso?`<span class="tag now">Hoje</span>`:"");
+    html+=`<article class="day${id===todayIso?" today":""}" data-day="${id}"><div class="when"><span class="d">${br(d)}</span><span class="w">${DAYS[di]}</span><span class="h">${blocks.length}h</span>${tags}</div><div class="blocks">`;
+    blocks.forEach((b,bi)=>{
+      const key=`${id}-${bi}`,[m,t,x]=b,[mn,mc]=M[m];
+      html+=`<div class="blk" style="--c:var(${mc})"><input type="checkbox" id="k${key}" data-k="${key}"${done[key]?" checked":""}><label for="k${key}"><span class="m">${bi+1}ª hora · ${mn}</span><span class="t">${esc(t)}</span><span class="x">${esc(x)}</span></label></div>`;
+    });
+    html+=`</div></article>`;
+  });
+  html+=`</section>`;
+});
+plan.innerHTML=html;
+document.getElementById("s-hours").textContent=totalBlocks+"h";
+
+function refresh(){
+  const n=Object.values(done).filter(Boolean).length;
+  const p=Math.round(n/totalBlocks*100);
+  document.getElementById("s-done").textContent=p+"%";
+  document.getElementById("bar").style.width=p+"%";
+  plan.querySelectorAll(".day").forEach(el=>{
+    const boxes=el.querySelectorAll("input");
+    el.classList.toggle("done",[...boxes].every(b=>b.checked));
+  });
+  applyFilter();
+}
+let filter="all";
+function applyFilter(){
+  plan.querySelectorAll(".week").forEach(w=>{
+    const wi=+w.dataset.week;
+    let showWeek=filter!=="now"||wi===currentWeek||(currentWeek<0&&wi===0);
+    let anyDay=false;
+    w.querySelectorAll(".day").forEach(d=>{
+      const hide=filter==="pend"&&d.classList.contains("done");
+      d.hidden=hide; if(!hide)anyDay=true;
+    });
+    w.hidden=!showWeek||!anyDay;
+  });
+}
+plan.addEventListener("change",e=>{
+  const k=e.target.dataset.k;if(!k)return;
+  if(e.target.checked)done[k]=1;else delete done[k];
+  save();refresh();
+});
+const btns={all:"b-all",now:"b-now",pend:"b-pend"};
+Object.entries(btns).forEach(([f,id])=>document.getElementById(id).addEventListener("click",()=>{
+  filter=f;Object.entries(btns).forEach(([g,i])=>document.getElementById(i).setAttribute("aria-pressed",String(g===f)));applyFilter();
+}));
+refresh();
+
+</script>
+
+</body>
+</html>
