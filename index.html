@@ -49,7 +49,7 @@ header{display:grid;gap:14px}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 button{font:600 .85rem var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
 button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
-button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .week{display:grid;gap:10px}
 .week-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--fg);padding-bottom:6px}
 .week-h h2{font-size:1.15rem;font-weight:800}
@@ -85,6 +85,55 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .weights .vis{width:40%;min-width:120px}
 .hb{height:8px;border-radius:99px;background:var(--accent)}
 .weights tr.top td:first-child{font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px}
+.tabs button{font-size:.92rem;padding:8px 14px}
+.blk{grid-template-columns:auto 1fr auto}
+.rv{display:flex;align-items:center;gap:6px;align-self:center}
+.rv button{padding:4px 9px;font-size:.75rem;white-space:nowrap}
+.rv .rv-n{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);min-width:2.6em;text-align:right}
+.rv .rv-n.has{color:var(--accent);font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.panel h2{font-size:1.15rem;font-weight:800}
+.panel h3{font-family:var(--f-display);font-size:1rem;margin:0}
+.panel p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.tbl{overflow-x:auto}
+.tbl table{width:100%;border-collapse:collapse;font-size:.88rem}
+.tbl th,.tbl td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+.tbl td.n,.tbl th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.n{font-family:var(--f-mono);font-size:.8rem}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;border-radius:99px;padding:2px 8px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.pill.late{background:var(--hol-soft);color:var(--hol)}
+.pill.zero{background:var(--line);color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid2>*{min-width:0}
+.crit{display:grid;gap:6px}
+.crit li{display:grid;grid-template-columns:1fr auto;gap:8px}
+ul.plain{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.themes{display:grid;gap:8px}
+.theme{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:start}
+.theme .eixo{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;color:var(--c-por)}
+.theme b{display:block}
+.theme .x{grid-column:1/-1;color:var(--muted);font-size:.85rem}
+label.f{display:grid;gap:4px;font-size:.85rem;font-weight:600}
+input.t,textarea.t,select.t{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%}
+textarea.t{min-height:340px;line-height:1.7;resize:vertical}
+input.t:focus-visible,textarea.t:focus-visible,select.t:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.counts{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.85rem;color:var(--muted)}
+.counts b{color:var(--fg);font-variant-numeric:tabular-nums}
+.warn{color:var(--hol);font-weight:600}
+.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button:disabled{opacity:.5;cursor:default}
+.result{display:grid;gap:14px;border-top:1px solid var(--line);padding-top:14px}
+.score{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.score b{font-family:var(--f-display);font-size:2.2rem;font-weight:800;font-variant-numeric:tabular-nums}
+.cbar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-block:4px}
+.cbar i{display:block;height:100%;background:var(--accent)}
+.err{border-left:3px solid var(--hol);padding-left:10px;font-size:.88rem}
+.err s{color:var(--hol)}
+@media (max-width:560px){.blk{grid-template-columns:auto 1fr}.blk .rv{grid-column:2}.theme{grid-template-columns:1fr}}
 @media (max-width:560px){.day{grid-template-columns:1fr}.when{grid-template-columns:auto auto 1fr;align-items:baseline;gap:8px}.when .h,.tag{margin-top:0}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
@@ -104,6 +153,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="stat"><b id="s-done">0%</b><span>concluído</span></div>
     </div>
     <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+    <nav class="tabs" aria-label="Seções">
+      <button id="t-plan" aria-pressed="true">Cronograma</button>
+      <button id="t-rev" aria-pressed="false">Revisões <span id="t-rev-n"></span></button>
+      <button id="t-red" aria-pressed="false">Redação</button>
+    </nav>
+  </header>
+  <div id="sec-plan" class="wrap">
     <div class="weights"><table><thead><tr><th>Matéria</th><th class="n">Pontos</th><th class="n">Horas no plano</th><th class="vis">Distribuição das horas</th></tr></thead><tbody id="weights"></tbody></table></div>
     <div class="legend" id="legend"></div>
     <div class="tools">
@@ -111,7 +167,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <button id="b-now" aria-pressed="false">Semana atual</button>
       <button id="b-pend" aria-pressed="false">Só pendentes</button>
     </div>
-  </header>
 
   <main id="plan" class="wrap"></main>
 
@@ -124,10 +179,72 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <li>Nos blocos de questões, filtre por Instituto AVALIA no QConcursos ou TEC Concursos e anote cada erro com o assunto.</li>
       <li>Feriados (02/11 e 20/11) estão mantidos como dias de estudo. Se folgar, desloque o conteúdo para o sábado.</li>
       <li>As horas seguem o peso da prova: Conhecimentos Específicos (30 questões valendo 2 pontos) e Redação valem juntos 120 dos 150 pontos.</li>
-      <li>Para não ser eliminada: pelo menos 45 pontos na objetiva, sem zerar nenhuma matéria, e pelo menos 30 pontos na redação.</li>
+      <li>Para não ser eliminada: pelo menos 45 pontos na objetiva, sem zerar nenhuma matéria, e pelo menos 30 pontos na redação. A prova tem 4h para objetiva e redação; nos simulados, faça tudo em 3h seguidas para treinar com folga.</li>
       <li>Redação toda quarta: dissertação de 20 a 30 linhas, escrita à mão no tempo de prova. Pela 3ª retificação, são corrigidas as redações dos 360 primeiros da ampla concorrência (150 pretos e pardos, 60 PcD, 18 indígenas, 12 quilombolas).</li>
       <li>No desempate, contam primeiro Conhecimentos Específicos e depois Língua Portuguesa: são as matérias para caprichar.</li>
+      <li>Use o botão "+ Revisão" ao lado de cada assunto sempre que revisar. A aba Revisões soma as revisões por assunto e sugere a próxima data (1, 7, 15 e 30 dias depois).</li>
     </ul>
+  </section>
+  </div>
+
+  <section id="sec-rev" class="wrap" hidden>
+    <div class="stats">
+      <div class="stat"><b id="r-total">0</b><span>revisões feitas</span></div>
+      <div class="stat"><b id="r-cov">0</b><span>assuntos revisados ao menos 1 vez</span></div>
+      <div class="stat"><b id="r-three">0</b><span>assuntos com 3 revisões ou mais</span></div>
+      <div class="stat"><b id="r-late">0</b><span>revisões para hoje ou atrasadas</span></div>
+    </div>
+    <div class="tools">
+      <label class="f" style="font-weight:500">Matéria
+        <select id="r-filter" class="t" style="min-width:220px"></select>
+      </label>
+      <button id="r-due" aria-pressed="false" style="align-self:end">Só para revisar hoje</button>
+    </div>
+    <div class="panel tbl"><table><thead><tr><th>Assunto</th><th>Estudo</th><th class="n">Revisões</th><th>Última</th><th>Próxima</th><th></th></tr></thead><tbody id="r-body"></tbody></table></div>
+    <p class="muted small">A contagem é por assunto: revisar o mesmo título em dias diferentes soma no mesmo contador. O "−" desfaz a última revisão registrada.</p>
+  </section>
+
+  <section id="sec-red" class="wrap" hidden>
+    <div class="grid2">
+      <div class="panel">
+        <h2>Como a AVALIA corrige</h2>
+        <p class="small muted">Edital 007/2026, item 13. Dissertação a partir de um tema com textos de apoio. Mínimo de 30 pontos para não ser eliminada.</p>
+        <ul class="plain crit small">
+          <li><span>1. Atendimento ao tema, informatividade e argumentação</span><b>15</b></li>
+          <li><span>2. Norma padrão da Língua Portuguesa</span><b>15</b></li>
+          <li><span>3. Coerência e coesão (referencial e sequencial)</span><b>15</b></li>
+          <li><span>4. Tipologia: estrutura dissertativa, expressividade e vocabulário</span><b>15</b></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>O que zera a redação</h2>
+        <ul class="plain small">
+          <li>Fugir do tema ou não escrever uma dissertação.</li>
+          <li>Texto muito desestruturado ou que atente contra o pudor.</li>
+          <li>Lápis ou caneta que não seja azul ou preta.</li>
+          <li>Folha em branco, letra ilegível ou espaçamento excessivo.</li>
+          <li>Qualquer identificação: nome, assinatura, sinais, desenhos.</li>
+          <li>Fique entre 20 e 30 linhas: o que passa da 30ª é ignorado, e menos de 20 perde pontos.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Estrutura para 25 a 28 linhas</h2>
+        <ul class="plain small">
+          <li><b>Introdução (5 a 6 linhas):</b> contextualize o tema e apresente sua tese e os dois argumentos.</li>
+          <li><b>Desenvolvimento 1 (7 a 8 linhas):</b> primeiro argumento, explicação e um exemplo, dado ou lei.</li>
+          <li><b>Desenvolvimento 2 (7 a 8 linhas):</b> segundo argumento, com conector de adição ou contraste.</li>
+          <li><b>Conclusão (5 a 6 linhas):</b> retome a tese e proponha um caminho: quem faz, o quê e como.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Temas prováveis para treinar</h2>
+      <p class="small">Escreva à mão, na folha de 20 a 30 linhas e com tempo cronometrado, como no dia da prova.</p>
+      <p class="small muted">Os temas de redação anteriores da AVALIA não são publicados. Esta lista não traz temas reais da banca: são apostas ligadas ao serviço público, à universidade e aos assuntos do edital, no formato que a banca usa (tema com textos de apoio).</p>
+      <div class="themes" id="themes"></div>
+    </div>
+
   </section>
 </div>
 
@@ -151,11 +268,11 @@ const W=[
  [ // 19/10
   [["DAD","Estado, governo e Administração Pública","Conceitos, elementos, poderes, organização, natureza, fins e princípios"],["ARQ","Conceitos fundamentais de arquivologia","Arquivo, documento, fundo, princípios arquivísticos, ciclo vital"],["POR","Interpretação de textos","Ideias centrais e periféricas, inferências, pressupostos e subentendidos"]],
   [["GES","Organizações formais","Tipos de estrutura organizacional, natureza, finalidades, critérios de departamentalização"],["ADP","Administração Pública na CF/88","Arts. 37 a 41: princípios, disposições gerais, servidores públicos"]],
-  [["DAD","Organização administrativa da União","Administração direta e indireta: autarquias, fundações, empresas públicas, SEM"],["POR","Tipologia e gêneros textuais","Narração, descrição, dissertação, exposição, injunção"],["RED","Redação: como a banca corrige","Dissertação de 20 a 30 linhas. 4 critérios de 15 pontos: tema, norma padrão, coesão e coerência, estrutura. Mínimo de 30/60"]],
+  [["DAD","Organização administrativa da União","Administração direta e indireta; autarquias, fundações, empresas públicas, SEM; competências, descentralização e desconcentração"],["POR","Tipologia e gêneros textuais","Narração, descrição, dissertação, exposição, injunção"],["RED","Redação: como a banca corrige","Dissertação de 20 a 30 linhas. 4 critérios de 15 pontos: tema, norma padrão, coesão e coerência, estrutura. Mínimo de 30/60"]],
   [["ARQ","Gestão de documentos","Gerenciamento da informação; produção, utilização e destinação"],["INF","Conceitos básicos e Windows","Hardware e software; Windows 10/11; arquivos, pastas e diretórios"]],
   [["MAT","Classificação de materiais","Atributos e tipos de classificação"],["ADP","Lei 8.112/90, parte 1","Provimento, vacância, remoção, redistribuição, substituição"],Q]],
  [ // 26/10
-  [["DAD","Agentes públicos","Espécies e classificação; poderes, deveres e prerrogativas; cargo, emprego e função"],["ARQ","Diagnóstico e arquivos correntes e intermediário","Diagnóstico arquivístico; teoria das três idades"],["POR","Ortografia e acentuação","Acordo Ortográfico vigente"]],
+  [["DAD","Agentes públicos","Espécies e classificação; investidura; poderes, deveres e prerrogativas; cargo, emprego e função; inclusão, diversidade e acessibilidade"],["ARQ","Diagnóstico e arquivos correntes e intermediário","Diagnóstico arquivístico; teoria das três idades"],["POR","Ortografia e acentuação","Acordo Ortográfico vigente"]],
   [["GES","Processo organizacional","Planejamento, direção, comunicação, controle e avaliação"],["ADP","Lei 8.112/90, parte 2","Direitos, vantagens, licenças e afastamentos"]],
   [["DAD","Poderes administrativos","Hierárquico, disciplinar, regulamentar, de polícia; uso e abuso do poder"],["POR","Coesão e coerência","Referência, elipse, conectores, operadores argumentativos"],["RED","Redação 1: atendimento ao cidadão","Tema: a qualidade do atendimento no serviço público. 60 min, 20 a 30 linhas"]],
   [["MAT","Gestão de estoques: conceitos","Funções do estoque, tipos de estoque, custos"],["INF","Word e PowerPoint (Office 365)","Formatação, atalhos, estilos, slides e modos de exibição"]],
@@ -173,7 +290,7 @@ const W=[
   [["ARQ","Arquivos permanentes","Recolhimento, arranjo, descrição e acesso"],["INF","Internet, e-mail, nuvem e redes","Navegadores, busca, Outlook, armazenamento e colaboração em nuvem"]],
   [["GES","Gestão da qualidade","Princípios e ferramentas da qualidade"],["ADP","Lei de Acesso à Informação","Lei 12.527/11 e Decreto 7.724/12: transparência ativa e passiva, sigilo"],Q]],
  [ // 16/11
-  [["LIC","Modalidades de licitação","Pregão, concorrência, concurso, leilão, diálogo competitivo"],["GES","Motivação","Relação indivíduo e organização; principais teorias de motivação"],["POR","Concordância verbal e nominal","Regras gerais e casos especiais"]],
+  [["LIC","Modalidades de licitação","Pregão, concorrência, concurso, leilão, diálogo competitivo; objetivos e critérios de julgamento"],["GES","Motivação","Relação indivíduo e organização; principais teorias de motivação"],["POR","Concordância verbal e nominal","Regras gerais e casos especiais"]],
   [["MAT","Recebimento, entrada e conferência","Recebimento provisório e definitivo, entrada e conferência de materiais"],["ADP","LGPD (Lei 13.709/18)","Dado pessoal e sensível, princípios, bases legais no poder público, direitos do titular"]],
   [["LIC","Procedimentos e fases","Fases da licitação, do planejamento à homologação"],["POR","Regência e crase","Regência verbal e nominal; casos de crase"],["RED","Redação 4: dados pessoais","Tema: proteção de dados pessoais nas instituições públicas"]],
   [["ARQ","Tipologias, suportes e automação","Tipologias documentais, suportes físicos, microfilmagem, automação"],["INF","Segurança da informação","Senhas, phishing, engenharia social; vírus e ransomware; antivírus, firewall, backup"]],
@@ -193,14 +310,14 @@ const W=[
  [ // 07/12
   [["DAD","Revisão: Direito Administrativo","Estado, organização, agentes, poderes, serviços, controle, responsabilidade"],["LIC","Revisão: licitações","Princípios, contratação direta, modalidades, fases"],["REV","Questões de específicos","30 questões misturadas"]],
   [["ARQ","Revisão: arquivologia","Ciclo vital, protocolo, avaliação, permanentes, preservação"],["MAT","Revisão: recursos materiais","Classificação, estoques, compras, recebimento, armazenagem"]],
-  [["REV","Simulado 1: objetiva","60 questões cronometradas (12 Português, 6 Informática, 12 Adm. Pública, 30 Específicos)"],["RED","Simulado 1: redação","Redação no tempo de prova, na folha de 30 linhas"],["REV","Correção do simulado","Calcular a nota (de 0 a 150) e anotar os erros por assunto"]],
-  [["GES","Revisão: administração e pessoas","Estruturas, processos, qualidade, projetos, motivação, liderança"],["ATE","Revisão: atendimento ao público","Qualidade, equipe, postura e comunicação + questões"]],
+  [["REV","Simulado 1: objetiva (parte 1)","3 horas seguidas, sem pausa. 60 questões: 12 Português, 6 Informática, 12 Adm. Pública, 30 Específicos"],["REV","Simulado 1: objetiva (parte 2)","Continuar a prova e marcar o gabarito. Na prova real são 4h para objetiva + redação"],["RED","Simulado 1: redação","Redação de 20 a 30 linhas na folha, ainda dentro das 3h"]],
+  [["REV","Correção do Simulado 1","Calcular a nota (de 0 a 150), corrigir a redação pelos 4 critérios e anotar os erros por assunto"],["GES","Revisão: administração, pessoas e atendimento","Estruturas, processos, qualidade, projetos, motivação, liderança, atendimento"]],
   [["POR","Revisão: Português","Concordância, regência, crase, pontuação e questões de interpretação"],["ADP","Revisão: legislação","8.112, ética, improbidade, 9.784, LAI e LGPD"],["RED","Redação 7: reescrita","Reescrever a redação do Simulado 1 corrigindo os erros"]]],
  [ // 14/12
   [["REV","Questões de específicos","40 questões misturadas dos Conhecimentos Específicos"],["REV","Revisar erros do Simulado 1","Retomar os assuntos com mais erros"],["ADP","Revisão: temas complementares","Governança, governo digital, A3P, IFES, Estatuto da UFBA"]],
   [["INF","Revisão: informática","Windows, Office 365, internet, segurança + questões"],["RED","Redação 8: inclusão","Tema: inclusão e acessibilidade na universidade pública"]],
-  [["REV","Simulado 2: objetiva","60 questões cronometradas"],["RED","Simulado 2: redação","Redação no tempo de prova"],["REV","Correção do simulado","Calcular a nota e anotar os erros"]],
-  [["REV","Pontos fracos dos específicos","Revisar os 3 assuntos com mais erros nos simulados"],["REV","Caderno de erros","Reler todos os erros anotados"]],
+  [["REV","Simulado 2: objetiva (parte 1)","3 horas seguidas, sem pausa"],["REV","Simulado 2: objetiva (parte 2)","Continuar a prova e marcar o gabarito"],["RED","Simulado 2: redação","Redação de 20 a 30 linhas, ainda dentro das 3h"]],
+  [["REV","Correção do Simulado 2","Calcular a nota, corrigir a redação e anotar os erros"],["REV","Pontos fracos e caderno de erros","Revisar os 3 assuntos com mais erros nos simulados e reler o caderno de erros"]],
   [["REV","Revisão leve final","Resumos, mapas mentais e modelo de estrutura da redação"],["REV","Preparação para a prova","Conferir local e horário (manhã), documento com foto e caneta azul ou preta"]]]
 ];
 const HOL={"2026-11-02":"Feriado","2026-11-20":"Feriado"};
@@ -224,6 +341,11 @@ const gh=GROUPS.map(([n,p,ks])=>[n,p,ks.reduce((a,k)=>a+(hrs[k]||0),0)]);const g
 document.getElementById("weights").innerHTML=gh.map(([n,p,h],i)=>`<tr class="${i<2?"top":""}"><td>${n}</td><td class="n">${p}</td><td class="n">${h}h</td><td class="vis"><div class="hb" style="width:${Math.round(h/gmax*100)}%"></div></td></tr>`).join("");
 document.getElementById("legend").innerHTML=Object.values(M).map(([n,c])=>`<span style="--c:var(${c})"><i class="dot"></i>${n}</span>`).join("");
 
+const REVIEWABLE=m=>m!=="REV"&&m!=="RED";
+const TOPICS=new Map();
+let revs={};
+try{revs=JSON.parse(localStorage.getItem("ufba-rev-v1")||"{}")||{}}catch(e){revs={}}
+const saveRevs=()=>{try{localStorage.setItem("ufba-rev-v1",JSON.stringify(revs))}catch(e){}};
 const plan=document.getElementById("plan");
 let totalBlocks=0,html="",currentWeek=-1;
 W.forEach((week,wi)=>{
@@ -239,7 +361,9 @@ W.forEach((week,wi)=>{
     html+=`<article class="day${id===todayIso?" today":""}" data-day="${id}"><div class="when"><span class="d">${br(d)}</span><span class="w">${DAYS[di]}</span><span class="h">${blocks.length}h</span>${tags}</div><div class="blocks">`;
     blocks.forEach((b,bi)=>{
       const key=`${id}-${bi}`,[m,t,x]=b,[mn,mc]=M[m];
-      html+=`<div class="blk" style="--c:var(${mc})"><input type="checkbox" id="k${key}" data-k="${key}"${done[key]?" checked":""}><label for="k${key}"><span class="m">${bi+1}ª hora · ${mn}</span><span class="t">${esc(t)}</span><span class="x">${esc(x)}</span></label></div>`;
+      if(REVIEWABLE(m)&&!TOPICS.has(t))TOPICS.set(t,{m,date:id});
+      const rvc=REVIEWABLE(m)?`<div class="rv"><span class="rv-n" data-rvn="${esc(t)}"></span><button data-rv="${esc(t)}" aria-label="Registrar revisão de ${esc(t)}">+ Revisão</button></div>`:"<span></span>";
+      html+=`<div class="blk" style="--c:var(${mc})"><input type="checkbox" id="k${key}" data-k="${key}"${done[key]?" checked":""}><label for="k${key}"><span class="m">${bi+1}ª hora · ${mn}</span><span class="t">${esc(t)}</span><span class="x">${esc(x)}</span></label>${rvc}</div>`;
     });
     html+=`</div></article>`;
   });
@@ -272,6 +396,14 @@ function applyFilter(){
     w.hidden=!showWeek||!anyDay;
   });
 }
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-rv],[data-rvminus]");if(!b)return;
+  const isAdd=b.hasAttribute("data-rv");
+  const t=isAdd?b.dataset.rv:b.dataset.rvminus;
+  if(isAdd){(revs[t]=revs[t]||[]).push(todayIso)}
+  else if(revs[t]&&revs[t].length){revs[t].pop();if(!revs[t].length)delete revs[t]}
+  saveRevs();renderRevs();
+});
 plan.addEventListener("change",e=>{
   const k=e.target.dataset.k;if(!k)return;
   if(e.target.checked)done[k]=1;else delete done[k];
@@ -282,6 +414,75 @@ Object.entries(btns).forEach(([f,id])=>document.getElementById(id).addEventListe
   filter=f;Object.entries(btns).forEach(([g,i])=>document.getElementById(i).setAttribute("aria-pressed",String(g===f)));applyFilter();
 }));
 refresh();
+
+/* ---------- Abas ---------- */
+const TABS={plan:"t-plan",rev:"t-rev",red:"t-red"};
+function showTab(k){
+  Object.entries(TABS).forEach(([n,id])=>{document.getElementById(id).setAttribute("aria-pressed",String(n===k));document.getElementById("sec-"+n).hidden=n!==k});
+  try{localStorage.setItem("ufba-tab",k)}catch(e){}
+}
+Object.entries(TABS).forEach(([k,id])=>document.getElementById(id).addEventListener("click",()=>showTab(k)));
+try{const k=localStorage.getItem("ufba-tab");if(TABS[k])showTab(k)}catch(e){}
+
+/* ---------- Revisões ---------- */
+const INTERVALS=[1,7,15,30];
+const addDays=(isoStr,n)=>{const [y,m,d]=isoStr.split("-").map(Number);return iso(new Date(y,m-1,d+n))};
+const brIso=s=>s?s.slice(8,10)+"/"+s.slice(5,7):"–";
+const rFilter=document.getElementById("r-filter");
+const usedM=[...new Set([...TOPICS.values()].map(v=>v.m))];
+rFilter.innerHTML='<option value="">Todas</option>'+usedM.map(m=>`<option value="${m}">${M[m][0]}</option>`).join("");
+let dueOnly=false;
+document.getElementById("r-due").addEventListener("click",e=>{dueOnly=!dueOnly;e.currentTarget.setAttribute("aria-pressed",String(dueOnly));renderRevs()});
+rFilter.addEventListener("change",renderRevs);
+function nextRev(t,info){
+  const list=revs[t]||[];
+  const base=list.length?list[list.length-1]:info.date;
+  return addDays(base,INTERVALS[Math.min(list.length,INTERVALS.length-1)]);
+}
+function renderRevs(){
+  let total=0,cov=0,three=0,late=0;
+  const rows=[];
+  TOPICS.forEach((info,t)=>{
+    const n=(revs[t]||[]).length;total+=n;if(n)cov++;if(n>=3)three++;
+    const studied=info.date<=todayIso;
+    const nx=nextRev(t,info);const isDue=studied&&nx<=todayIso;if(isDue)late++;
+    if(rFilter.value&&info.m!==rFilter.value)return;
+    if(dueOnly&&!isDue)return;
+    const [mn,mc]=M[info.m];
+    const pill=!studied?`<span class="pill zero">após ${brIso(info.date)}</span>`:isDue?`<span class="pill late">${nx<todayIso?"atrasada":"hoje"}</span>`:`<span class="pill">${brIso(nx)}</span>`;
+    rows.push(`<tr><td style="border-left:3px solid var(${mc})"><div class="small" style="color:var(${mc});font-weight:600">${mn}</div>${esc(t)}</td><td class="small">${brIso(info.date)}</td><td class="n">${n}</td><td class="small">${brIso((revs[t]||[]).slice(-1)[0])}</td><td>${pill}</td><td style="white-space:nowrap"><button data-rvminus="${esc(t)}" aria-label="Desfazer a última revisão" ${n?"":"disabled"}>−</button> <button data-rv="${esc(t)}">+ Revisão</button></td></tr>`);
+  });
+  document.getElementById("r-body").innerHTML=rows.join("")||'<tr><td colspan="6" class="muted">Nenhum assunto para revisar com esse filtro.</td></tr>';
+  document.getElementById("r-total").textContent=total;
+  document.getElementById("r-cov").textContent=cov+"/"+TOPICS.size;
+  document.getElementById("r-three").textContent=three;
+  document.getElementById("r-late").textContent=late;
+  document.getElementById("t-rev-n").textContent=late?`(${late})`:"";
+  document.querySelectorAll("[data-rvn]").forEach(el=>{const n=(revs[el.dataset.rvn]||[]).length;el.textContent=n?n+"×":"";el.classList.toggle("has",n>0)});
+}
+renderRevs();
+
+/* ---------- Redação ---------- */
+const THEMES=[
+ ["Serviço público","O atendimento humanizado como direito do cidadão no serviço público","Carta de Serviços (Lei 13.460/17); filas e canais digitais; acolhimento de grupos vulneráveis."],
+ ["Serviço público","Transformação digital dos serviços públicos e o risco de exclusão digital","Lei 14.129/21 (Governo Digital); gov.br; pessoas sem acesso à internet ou sem letramento digital."],
+ ["Serviço público","Transparência e acesso à informação como ferramentas de cidadania","Lei de Acesso à Informação; portais de transparência; controle social."],
+ ["Serviço público","Ética e integridade no combate à corrupção na Administração Pública","Lei de Improbidade; Código de Ética (Decreto 1.171/94); confiança da população nas instituições."],
+ ["Serviço público","Eficiência e valorização do servidor público","Princípio da eficiência (EC 19/98); capacitação; qualidade do serviço prestado."],
+ ["Tecnologia","Proteção de dados pessoais em um mundo conectado","LGPD; vazamentos de dados; golpes digitais."],
+ ["Tecnologia","Os impactos da inteligência artificial no trabalho e na sociedade","Automação de tarefas; novas profissões; uso responsável e ético."],
+ ["Tecnologia","Desinformação e fake news: desafios para a democracia","Redes sociais; checagem de fatos; educação midiática."],
+ ["Universidade e educação","O papel da universidade pública no desenvolvimento regional","Pesquisa, extensão e formação profissional na Bahia; autonomia universitária."],
+ ["Universidade e educação","Políticas de cotas e a democratização do ensino superior","Lei de Cotas; permanência estudantil; diversidade no campus."],
+ ["Sociedade","Inclusão e acessibilidade das pessoas com deficiência","Estatuto da Pessoa com Deficiência; barreiras físicas e atitudinais."],
+ ["Sociedade","O combate ao racismo e a promoção da igualdade racial","Racismo estrutural; ações afirmativas; Salvador como cidade de maioria negra."],
+ ["Sociedade","A desigualdade de gênero no mercado de trabalho","Diferença salarial; dupla jornada; políticas de equidade."],
+ ["Sociedade","Saúde mental no ambiente de trabalho","Burnout; assédio moral; papel das instituições."],
+ ["Meio ambiente","Sustentabilidade e consumo consciente nas instituições públicas","A3P; gestão de resíduos; uso eficiente de energia e água."],
+ ["Meio ambiente","Mudanças climáticas e a responsabilidade do poder público","Eventos extremos; prevenção de desastres; políticas ambientais."]
+];
+const themesEl=document.getElementById("themes");
+themesEl.innerHTML=THEMES.map(([e,t,x],i)=>`<div class="theme"><div><span class="eixo">${e}</span><b>${esc(t)}</b></div><span></span><span class="x">Ideias de repertório: ${esc(x)}</span></div>`).join("");
 
 </script>
 
